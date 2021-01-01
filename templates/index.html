@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <title>Art</title>
+</head>
+
+<body class="bg-light">
+    <main class="content container" style="max-width: 600px">
+        <div class="py-5">
+            <header class="mb-3 text-uppercase">1. Load an image:</header>
+            <form enctype="multipart/form-data" id="uploadForm">
+                <div class="mb-3">
+                    <input id="files" class="form-control" accept="image/*" type="file" name="file" />
+                    <img id="image" />
+                    <script type="text/javascript">
+                        document.getElementById("files").onchange = function () {
+                            var reader = new FileReader();
+
+                            reader.onload = function (e) {
+                                // get loaded data and render thumbnail:
+                                var content = e.target.result;
+                                document.getElementById("image").src = content;
+                            };
+
+                            // read the image file as a data URL:
+                            reader.readAsDataURL(this.files[0]);
+                        };
+                    </script>
+                </div>
+                <header class="mb-3 text-uppercase">2. Pick a style:</header>
+                <div class="mb-3">
+                    <input id="sunset-submit" type="button" name="style" value="sunset" style="background-image: url('static/icons/sunset.jfif'); background-size:100% 100%; height:128px; width:128px; color: transparent">
+                    <input id="scream-submit" type="button" name="style" value="scream" style="background-image: url('static/icons/scream.jfif'); background-size:100% 100%; height:128px; width:128px; color: transparent">
+                    <input id="tree-submit" type="button" name="style" value="tree" style="background-image: url('static/icons/tree.jpg'); background-size:100% 100%; height:128px; width:128px; color: transparent">
+                    <input id="mosaic-submit" type="button" name="style" value="mosaic" style="background-image: url('static/icons/mosaic.jpeg'); background-size:100% 100%; height:128px; width:128px; color: transparent">
+                </div>
+                <header class="mb-3 text-uppercase">3. Enjoy the result!</header>
+                <img id="loading" src="static/icons/loading.gif" style="display: none" />
+                <img id="output" />
+                <script>
+                    addEventListener("DOMContentLoaded", function() {
+                        var styles = document.getElementsByName("style");
+                        for (var i=0; i<styles.length; i++) {
+                            var style = styles[i];
+                            style.addEventListener("click", function(e) {
+                                document.getElementById("output").style = "display: none";
+                                document.getElementById("loading").style = "max-width: 128px; max-height: 128px";
+                                var fd = new FormData(uploadForm);
+                                var clickedStyle = e.target;
+                                fd.append("style", clickedStyle.value);
+                                var text = document.getElementById("image").src
+                                fd.append("content", text);
+                                var request = new XMLHttpRequest();
+                                request.open("POST", "/stylize");
+                                request.onload = function() {
+                                    document.getElementById("loading").style = "display: none";
+                                    document.getElementById("output").src = request.responseText;
+                                    document.getElementById("output").style = "";
+                                };
+                                request.send(fd);
+                            });
+                        }
+                    }, true);
+                </script>
+            </form>
+        </div>
+    </main>
+    <footer class="footer">
+        MADE by <a href="https://github.com/IMDxD">Anton Nesterenko</a> & <a href="https://github.com/Illumaria">Dmitry Astankov</a>
+    </footer>
+</body>
+
+</html>
