@@ -7,7 +7,7 @@ The main idea behind the project is to make an image stylization service (analog
 
 The mathematical problem statement: Fast Neural Style generative adversarial network (GAN) with L2-loss between the generated and the original images to preserve the original image content and with L2-loss between the images' Gram matrices to preserve the given style.
 
-### Usage:
+### Usage
 The app can be tested by running the following commands:
 ```
 git clone https://github.com/Illumaria/style-transfer-GAN
